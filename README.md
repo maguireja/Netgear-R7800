@@ -24,5 +24,16 @@ Baud 115200
 ```
 
 # Dumping NVRAM
+On the Kali laptop I ran the following command to locate the flipper:
+```
+ls /dev/serial/by-id
+```
+The output of this command should provide you with the unique name for your flipper. With that you can run the following screen command to enter in to the UART port:
+```
+screen /dev/serial/by-id/usb-Flipper_Devices_Inc.Flipper_UNIQUE_ID_HERE
+```
+After running the screen command I saw the following prompt and was dropped into an admin shell on the netgear:
+```
+```
 
 # Password Cracking
