@@ -65,3 +65,58 @@ wla_wpa2_psk=[REDACTED]
 The two redacted values were the same, I tested them out and they were the pre shared key for the wireless network.
 
 # Password Cracking
+While I had found the preshared key for the network, I did not have the admin password to log in to the routers web management portal. I tried the preshared key thinking the previous owner would just reuse the same password, but they did not. Looking through the output of the <i>show nvram</i> command, I saw the following lines:
+```
+http_passwd_digest=[REDACTED]
+http_passwd=[REDACTED]
+```
+Similiar to the preshared key, both redacted strings were the same. But they were not plaintext passwords, they looked like hashed or encoded passwords. I checked them with Hash ID:
+```
+$hashid hash
+Analyzing 'REDACTED'
+[+] Snefru-256
+[+] SHA-256
+[+] RIPEMD-256
+[+] Haval-256
+[+] GOST R 34.11-94
+[+] GOST CryptoPro S-Box
+[+] SHA3-256
+[+] Skein-256
+[+] Skein-512(256)
+--End of file 'hash'--
+```
+
+The only hash type here that I'm remotely familiar with is SHA-256, so I thought I'd take a chance and try cracking the string as a SHA-256 hash.  I used Hashcat with the rockyou2024 wordlist and the rockyou-30000 ruleset:
+```
+./hashcat.bin -a 0 -m 1400 test-hash ~/tools/wordlists/rockyou2024.txt -r rules/rockyou-30000.rule
+```
+After about 9 or 10 hours, I had cracked the hash and recovered the plaintext password:
+```
+Session..........: hashcat
+Status...........: Cracked
+Hash.Mode........: 1400 (SHA2-256)
+Hash.Target......: 47521790546b87fbff76c89e3af8433af43c0f26734edbefc44...21eccf
+Time.Started.....: Tue Feb 11 09:39:52 2025 (21 hours, 18 mins)
+Time.Estimated...: Wed Feb 12 06:58:06 2025 (0 secs)
+Kernel.Feature...: Pure Kernel
+Guess.Base.......: File (/home/hpn/tools/wordlists/rockyou2024.txt)
+Guess.Mod........: Rules (rules/rockyou-30000.rule)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:  1854.6 MH/s (11.94ms) @ Accel:64 Loops:256 Thr:32 Vec:1
+Speed.#2.........:   993.0 MH/s (10.39ms) @ Accel:128 Loops:64 Thr:64 Vec:1
+Speed.#*.........:  2847.5 MH/s
+Recovered........: 1/1 (100.00%) Digests (total), 1/1 (100.00%) Digests (new)
+Progress.........: 173279177015296/298457185890000 (58.06%)
+Rejected.........: 0/173279177015296 (0.00%)
+Restore.Point....: 5775478784/9948572863 (58.05%)
+Restore.Sub.#1...: Salt:0 Amplifier:7936-8192 Iteration:0-256
+Restore.Sub.#2...: Salt:0 Amplifier:16704-16768 Iteration:0-64
+Candidate.Engine.: Device Generator
+Candidates.#1....: cami1212nd806 -> camlin8657275
+Candidates.#2....: kamille_09rose1 -> camilosantamari101
+Hardware.Mon.#1..: Temp: 78c Fan: 95% Util: 99% Core:1875MHz Mem:6800MHz Bus:16
+Hardware.Mon.#2..: Temp: 73c Fan: 60% Util: 99% Core:1923MHz Mem:4513MHz Bus:4
+
+Started: Tue Feb 11 09:39:51 2025
+Stopped: Wed Feb 12 06:58:08 2025
+```
