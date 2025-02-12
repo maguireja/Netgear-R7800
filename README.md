@@ -20,7 +20,21 @@ I opened up the case and found four pins that look like UART, but they were not 
 
 Next I used a Flipper Zero and a laptop running Kali Linux to connect to the UART port. I used the Flipper's USB-UART Bridge Module with the following config:
 ```
-Baud 115200BusyBox v1.4.2 (2018-12-10 10:26:59 UTC) Built-in shell (ash)
+Baud 115200
+```
+
+# Dumping NVRAM
+On the Kali laptop I ran the following command to locate the flipper:
+```
+ls /dev/serial/by-id
+```
+The output of this command should provide you with the unique name for your flipper. With that you can run the following screen command to enter in to the UART port:
+```
+screen /dev/serial/by-id/usb-Flipper_Devices_Inc.Flipper_UNIQUE_ID_HERE
+```
+After running the screen command and letting the netgear boot up, I was dropped into an root shell on the netgear:
+```
+BusyBox v1.4.2 (2018-12-10 10:26:59 UTC) Built-in shell (ash)
 Enter 'help' for a list of built-in commands.
 
      MM           NM                    MMMMMMM          M       M
@@ -43,18 +57,7 @@ MMMM$ ,MMMMM  MMMMM  MMMM    MMM       MMMM   MMMMM   MMMM    MMMM
  ---------------------------------------------------------------
 root@R7800:/#
 ```
+Next I ran the <i>show nvram</i> command from Matt's video, and I found the following entry in the output:
 
-# Dumping NVRAM
-On the Kali laptop I ran the following command to locate the flipper:
-```
-ls /dev/serial/by-id
-```
-The output of this command should provide you with the unique name for your flipper. With that you can run the following screen command to enter in to the UART port:
-```
-screen /dev/serial/by-id/usb-Flipper_Devices_Inc.Flipper_UNIQUE_ID_HERE
-```
-After running the screen command I saw the following prompt and was dropped into an admin shell on the netgear:
-```
-```
 
 # Password Cracking
