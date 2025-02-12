@@ -16,7 +16,7 @@ Video here: https://youtu.be/7iuwY3hIcHw?si=osBN4qiOezMgb0qB
 
 # Locating UART
 I opened up the case and found four pins that look like UART, but they were not labeled. However I was able to follow the steps in Matt's video and use a multimeter to locate the Ground, Send and Recieve pins.
-
+<img src="https://github.com/maguireja/netgear/blob/4a948d08c5084d1741fed89ba6b057aac21a280b/R7800%20pins.png">
 
 # Dumping NVRAM
 
