@@ -15,8 +15,13 @@ Now that I realized the router was still configured, I wondered if I could recov
 Video here: https://youtu.be/7iuwY3hIcHw?si=osBN4qiOezMgb0qB
 
 # Locating UART
-I opened up the case and found four pins that look like UART, but they were not labeled. However I was able to follow the steps in Matt's video and use a multimeter to locate the Ground, Send and Recieve pins.
+I opened up the case and found four pins that look like UART, but they were not labeled. I was able to follow the steps in Matt's video and use a multimeter to locate the Ground, Send and Recieve pins.
 <img src="https://github.com/maguireja/netgear/blob/4a948d08c5084d1741fed89ba6b057aac21a280b/R7800%20pins.png">
+
+Next I used a Flipper Zero and a laptop running Kali Linux to connect to the UART port. I used the Flipper's USB-UART Bridge Module with the following config:
+```
+Baud 115200
+```
 
 # Dumping NVRAM
 
