@@ -20,7 +20,28 @@ I opened up the case and found four pins that look like UART, but they were not 
 
 Next I used a Flipper Zero and a laptop running Kali Linux to connect to the UART port. I used the Flipper's USB-UART Bridge Module with the following config:
 ```
-Baud 115200
+Baud 115200BusyBox v1.4.2 (2018-12-10 10:26:59 UTC) Built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+     MM           NM                    MMMMMMM          M       M
+   $MMMMM        MMMMM                MMMMMMMMMMM      MMM     MMM
+  MMMMMMMM     MM MMMMM.              MMMMM:MMMMMM:   MMMM   MMMMM
+MMMM= MMMMMM  MMM   MMMM       MMMMM   MMMM  MMMMMM   MMMM  MMMMM'
+MMMM=  MMMMM MMMM    MM       MMMMM    MMMM    MMMM   MMMMNMMMMM
+MMMM=   MMMM  MMMMM          MMMMM     MMMM    MMMM   MMMMMMMM
+MMMM=   MMMM   MMMMMM       MMMMM      MMMM    MMMM   MMMMMMMMM
+MMMM=   MMMM     MMMMM,    NMMMMMMMM   MMMM    MMMM   MMMMMMMMMMM
+MMMM=   MMMM      MMMMMM   MMMMMMMM    MMMM    MMMM   MMMM  MMMMMM
+MMMM=   MMMM   MM    MMMM    MMMM      MMMM    MMMM   MMMM    MMMM
+MMMM$ ,MMMMM  MMMMM  MMMM    MMM       MMMM   MMMMM   MMMM    MMMM
+  MMMMMMM:      MMMMMMM     M         MMMMMMMMMMMM  MMMMMMM MMMMMMM
+    MMMMMM       MMMMN     M           MMMMMMMMM      MMMM    MMMM
+     MMMM          M                    MMMMMMM        M       M
+       M
+ ---------------------------------------------------------------
+   For those about to rock... (%C, %R)
+ ---------------------------------------------------------------
+root@R7800:/#
 ```
 
 # Dumping NVRAM
