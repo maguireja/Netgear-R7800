@@ -57,7 +57,11 @@ MMMM$ ,MMMMM  MMMMM  MMMM    MMM       MMMM   MMMMM   MMMM    MMMM
  ---------------------------------------------------------------
 root@R7800:/#
 ```
-Next I ran the <i>show nvram</i> command from Matt's video, and I found the following entry in the output:
-
+Next I ran the <i>show nvram</i> command from Matt's video, and I found the following entries in the output:
+```
+wl_wpa2_psk=[REDACTED]
+wla_wpa2_psk=[REDACTED]
+```
+The two redacted values were the same, I tested them out and they were the pre shared key for the wireless network.
 
 # Password Cracking
