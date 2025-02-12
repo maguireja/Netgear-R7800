@@ -15,6 +15,8 @@ Now that I realized the router was still configured, I wondered if I could recov
 Video here: https://youtu.be/7iuwY3hIcHw?si=osBN4qiOezMgb0qB
 
 # Locating UART
+I opened up the case and found four pins that look like UART, but they were not labeled. However I was able to follow the steps in Matt's video and use a multimeter to locate the Ground, Send and Recieve pins.
+
 
 # Dumping NVRAM
 
