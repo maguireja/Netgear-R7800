@@ -90,7 +90,7 @@ The only hash type here that I'm remotely familiar with is SHA-256, so I thought
 ```
 ./hashcat.bin -a 0 -m 1400 test-hash ~/tools/wordlists/rockyou2024.txt -r rules/rockyou-30000.rule
 ```
-After about 9 or 10 hours, I had cracked the hash and recovered the plaintext password:
+After nearly a full day, I had cracked the hash and recovered the plaintext password:
 ```
 Session..........: hashcat
 Status...........: Cracked
