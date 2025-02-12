@@ -12,7 +12,7 @@ I plugged in the router and to my surprise, the router had not been reset to a f
 
 # Password Recovery
 Now that I relized the router was still configured, I wondered if I could recover the password for the wireless network, as well as any other configured passwords. I followed along with Matt Brown's video here which was fantastic. I recommend subscribing to Matt's channel he has some really good content.
-<iframe width="560" height="315" src="https://www.youtube.com/embed/7iuwY3hIcHw?si=XAwx_R5DZBivJRon" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+Video here: https://youtu.be/7iuwY3hIcHw?si=osBN4qiOezMgb0qB
 
 # Locating UART
 
