@@ -120,3 +120,73 @@ Hardware.Mon.#2..: Temp: 73c Fan: 60% Util: 99% Core:1923MHz Mem:4513MHz Bus:4
 Started: Tue Feb 11 09:39:51 2025
 Stopped: Wed Feb 12 06:58:08 2025
 ```
+
+# Adding a bind shell
+While the UART interface is cool, it would be more convient to connect to the device through a shell. An easy way to do this is to add a new binary to the device. 
+
+There's a really nice repo of precompiled binaries here:
+https://github.com/therealsaumil/static-arm-bins
+
+I could not get wget or curl to work on the router itself, wget gave the following error:
+```
+root@R7800:~# wget https://github.com/therealsaumil/static-arm-bins/raw/refs/heads/master/telnetd-static
+https://github.com/therealsaumil/static-arm-bins/raw/refs/heads/master/telnetd-static: HTTPS support not compiled in.
+```
+
+Curl just failed to download the file, when I enabled verbose output it looked like there were SSL errors. It seems like the versions of curl and wget are too old for github. I didn't troubleshoot this all the much, I just downloaded the binary to my laptop and served it to the router from there:
+```
+hroot@R7800:~# wget ttp://192.168.1.3:8000/telnetd-static
+Connecting to 192.168.1.3:8000... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 541964 (529K) [application/octet-stream]
+Saving to: `telnetd-static'
+
+100%[======================================>] 541,964     --.-K/s   in 0.01s   
+
+2025-02-18 17:20:04 (45.0 MB/s) - `telnetd-static' saved [541964/541964]
+
+```
+Then run the binary after downloading:
+```
+root@R7800:~# ./telnetd-static -p 1234
+```
+
+On the laptop, use the telnet client to connect to the new telnet server:
+``` telnet 192.168.1.1 1234
+Trying 192.168.1.1...
+Connected to 192.168.1.1.
+Escape character is '^]'.
+ === LOGIN ===============================
+  Please enter your password,It's the same
+  with DUT login password
+ ------------------------------------------
+telnet password:[REDACTED]
+=== IMPORTANT ============================
+ Use 'passwd' to set your login password
+ this will disable telnet and enable SSH
+------------------------------------------
+
+
+BusyBox v1.4.2 (2018-12-10 10:26:59 UTC) Built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+     MM           NM                    MMMMMMM          M       M
+   $MMMMM        MMMMM                MMMMMMMMMMM      MMM     MMM
+  MMMMMMMM     MM MMMMM.              MMMMM:MMMMMM:   MMMM   MMMMM
+MMMM= MMMMMM  MMM   MMMM       MMMMM   MMMM  MMMMMM   MMMM  MMMMM'
+MMMM=  MMMMM MMMM    MM       MMMMM    MMMM    MMMM   MMMMNMMMMM
+MMMM=   MMMM  MMMMM          MMMMM     MMMM    MMMM   MMMMMMMM
+MMMM=   MMMM   MMMMMM       MMMMM      MMMM    MMMM   MMMMMMMMM
+MMMM=   MMMM     MMMMM,    NMMMMMMMM   MMMM    MMMM   MMMMMMMMMMM
+MMMM=   MMMM      MMMMMM   MMMMMMMM    MMMM    MMMM   MMMM  MMMMMM
+MMMM=   MMMM   MM    MMMM    MMMM      MMMM    MMMM   MMMM    MMMM
+MMMM$ ,MMMMM  MMMMM  MMMM    MMM       MMMM   MMMMM   MMMM    MMMM
+  MMMMMMM:      MMMMMMM     M         MMMMMMMMMMMM  MMMMMMM MMMMMMM
+    MMMMMM       MMMMN     M           MMMMMMMMM      MMMM    MMMM
+     MMMM          M                    MMMMMMM        M       M
+       M
+ ---------------------------------------------------------------
+   For those about to rock... (%C, %R)
+ ---------------------------------------------------------------
+```
+And it works! It does require a password, and the password is the same password for the web interface. I am not sure how exactly the new telnet server knows where to find this password. This needs more research
