@@ -190,3 +190,30 @@ MMMM$ ,MMMMM  MMMMM  MMMM    MMM       MMMM   MMMMM   MMMM    MMMM
  ---------------------------------------------------------------
 ```
 And it works! It does require a password, and the password is the same password for the web interface. I am not sure how exactly the new telnet server knows where to find this password. This needs more research
+
+Mount Output
+```
+root@R7800:~# mount
+rootfs on / type rootfs (rw)
+/dev/root on /rom type squashfs (ro,relatime)
+proc on /proc type proc (rw,relatime)
+sysfs on /sys type sysfs (rw,relatime)
+tmpfs on /tmp type tmpfs (rw,nosuid,nodev,relatime,size=0k)
+tmpfs on /dev type tmpfs (rw,relatime,size=512k,mode=755)
+devpts on /dev/pts type devpts (rw,relatime,mode=600)
+none on /proc/bus/usb type usbfs (rw,relatime)
+ubi0:overlay_volume on /overlay type ubifs (rw,relatime)
+overlayfs:/overlay on / type overlayfs (rw,relatime,lowerdir=/,upperdir=/overlay)
+debugfs on /sys/kernel/debug type debugfs (rw,relatime)
+```
+
+crontab outout
+```
+root@R7800:~/etc/crontabs# pwd
+/tmp/etc/crontabs
+root@R7800:~/etc/crontabs# ls
+root
+root@R7800:~/etc/crontabs# cat root 
+0 2 * * * 11k_scan &
+-25 02 * * * streamboost update_fmn; streamboost auto_upload; streamboost auto_update && streamboost restart
+```
