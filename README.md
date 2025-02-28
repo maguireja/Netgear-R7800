@@ -220,7 +220,7 @@ root@R7800:~/etc/crontabs# cat root
 
 # Enabling Telnet
 I spent awhile trying to figure out how to get the telnet binary to run on boot, and didn't have any luck. While researching, I found that the version of firmware on my router supports a special debugging page. On the debugging page, you can simply enable telnet:
-
+<img src="https://github.com/maguireja/netgear/blob/main/Screenshot_2025-02-28_11-45-43.png?raw=true">
 
 # Recreating CVE-2022-40619
 While checking out the filesystem, I found a folder named _funjsq_
